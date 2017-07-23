@@ -17,7 +17,7 @@ Slack weather bot that uses DarkSky API to get forecasts. If bot is running, it'
 
 * DarkSky API -- provides the weather info
 * Slack API -- uses RTM inferface 
-* Stanford NLP library -- used to tokenization and labeling of messages
+* Stanford NLP library -- used for tokenization and labeling of messages
   * Download model data package from http://nlp.stanford.edu/software/stanford-postagger-full-2016-10-31.zip
 
 ## Setup Instructions
