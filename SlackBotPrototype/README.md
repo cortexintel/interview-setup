@@ -4,6 +4,10 @@
 
 Slack weather bot that uses DarkSky API to get forecasts. If bot is running, it'll notify every morning of the current weather if the today's forecast is different from yesterday's. The bot is currently intended to run a console executable but can be modified to run as a windows service.
 
+## Features
+
+* Responds to `weather now`, `weather tomorrow`, and `what should I wear?`
+
 ## Development Setup
 
 * Visual Studio 2017
@@ -23,7 +27,7 @@ Slack weather bot that uses DarkSky API to get forecasts. If bot is running, it'
 * Set environment variable for Stanford NLP model folder `STANFORD_NLP_FOLDER` to the location of the extracted package
 * Set environment variable for DarkSky API `DARK_SKY_TOKEN` to DarkSky secret
 * Set environment variable for Slack API bot user `SLACK_API_TOKEN` to Slack bot user secret
-* Run executable via commandline `./SlackBotProtoType.exe`
+* Run executable via commandline `./SlackBotPrototype.exe`
 
 
 
