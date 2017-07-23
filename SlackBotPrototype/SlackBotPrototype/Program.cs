@@ -71,7 +71,7 @@ namespace SlackBotPrototype
 
 					foreach (var channel in channels)
 					{
-						_client.PostMessage((r) => { }, channel.id, $"Notification: weather changed -- {forecastWarning}");
+						_client.PostMessage((r) => { }, channel.id, $"@channel Notification: weather changed -- {forecastWarning}", linkNames: true);
 					}
 
 				}, (s) => s.ToRunEvery(1).Days().At(6, 0));
