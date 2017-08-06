@@ -18,6 +18,46 @@ It currently only supports small set of locations from demonstration purposes, 1
 
 * Visual Studio 2017
 * Windows 10 (.NET 4.5.2)
+* Ensure that app.config files are present in both `DBPreparer` and `SlackBotPropertype`
+
+### DBPreparer App.config
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-10.0.0.0" newVersion="10.0.0.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+</configuration>
+```
+
+### SlackBotPrototype App.config
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <startup>
+      <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5.2" />
+  </startup>
+  <appSettings>
+      <add key="SLACK_API_TOKEN" value="TOKEN" />
+      <add key="DARK_SKY_TOKEN" value="TOKEN" />      
+  </appSettings>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-10.0.0.0" newVersion="10.0.0.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+</configuration>
+```
 
 ## External Dependencies
 
