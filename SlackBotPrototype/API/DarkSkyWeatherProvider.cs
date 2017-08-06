@@ -1,58 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using RestSharp;
 
 namespace API
 {
+
 	public class DarkSkyWeatherProvider : IWeatherProvider
 	{
 		private readonly string _apiSecret;
-		private readonly RestClient _client = new RestClient("https://api.darksky.net");
+		private readonly IHttpRequestClient _client;
 
-		public DarkSkyWeatherProvider(string apiSecret)
+		public DarkSkyWeatherProvider(string apiSecret, IHttpRequestClient client)
 		{
 			_apiSecret = apiSecret;
+			_client = client;
 		}
 
-		public string GetForecast(DateTime when)
+		public string GetForecast(Location location, DateTime when)
 		{
-			var forecastItem = GetForecastRaw(when);
-			return forecastItem.Daily.Data.FirstOrDefault()?.Summary;
+			var forecastItem = GetForecastRaw(location, when);
+			return forecastItem.Summary;
 		}
 
-		public string GetForecastWarning()
+		public ChatBotForecast GetForecastRaw(Location location, DateTime when)
 		{
-			var today = GetForecastRaw(DateTime.Now);
-			var yesterday = GetForecastRaw(DateTime.Now.AddDays(-1));
-
-			// Darksky recommends using "icon" for automated purposes and "summary" for human readable output
-			return today.Daily.Data.FirstOrDefault()?.Icon != yesterday.Daily.Data.FirstOrDefault()?.Icon 
-				? today.Daily.Data.FirstOrDefault()?.Summary 
-				: string.Empty;
-		}
-
-		public ForecastItem GetForecastRaw(DateTime when)
-		{
+			
 			var timeStamp = when.DateTimeToUnixTimestamp();
-			var resp = _client.Get(new RestRequest(Method.GET)
-			{
-				// To save time, hard code location
-				Resource = $"/forecast/{_apiSecret}/38.9072,-77.0369,{(int)timeStamp}?exclude=currently,minutely,hourly,flags"
-			});
-
-			if (resp.StatusCode != HttpStatusCode.OK)
-			{
-				return null;
-			}
-
-			var content = resp.Content;
+			// SHORTCUT: We could cache requests in memory for recent forecast requests so we don't have
+			// to keep making network calls and improve performance. The tricky part would be
+			// figuring out what's the right invalidation scheme. It would probably involve the time 
+			// returned in each request, location, and UTC time. Skipping it for now.
+			var content = _client.GetContent($"/forecast/{_apiSecret}/{location.Latitude},{location.Longitude},{(int)timeStamp}?exclude=currently,minutely,hourly,flags");
 			var forecastItem = JsonConvert.DeserializeObject<ForecastItem>(content);
-			return forecastItem;
+			
+			return new ChatBotForecast
+			{
+				Location = location,
+				Icon = forecastItem.Daily.Data.FirstOrDefault()?.Icon,
+				Summary = forecastItem.Daily.Data.FirstOrDefault()?.Summary
+			};
 		}
 	}
 }

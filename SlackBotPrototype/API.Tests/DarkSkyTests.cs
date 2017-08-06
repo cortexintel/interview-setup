@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 
 namespace API.Tests
@@ -13,33 +16,39 @@ namespace API.Tests
 	/// put here for demonstrative purposes
 	/// </summary>
 	[TestFixture]
-	public class TestDarkskyRequests
+	public class TestDarkskyRequests : EmbeddedResourceTestBase
 	{
-		private DarkSkyWeatherProvider _weatherProvider;
+		private Location _testLocation;
+		private IWeatherProvider _weatherProvider;
 
 		[OneTimeSetUp]
 		public void Init()
 		{
-			_weatherProvider = new DarkSkyWeatherProvider(ConfigConstants.DarkSkyApiSecret);
+			_testLocation = new Location() { Latitude = 38.889931, Longitude = -77.0369 };
+
+			var mockHttp = new Mock<IHttpRequestClient>();
+
+			var dcDailyForecastJson = GetFromResource("dc-daily.json");
+			mockHttp.Setup(m => m.GetContent(It.IsRegex("-77.0369"))).Returns(dcDailyForecastJson);
+			_weatherProvider = new DarkSkyWeatherProvider(ConfigConstants.DarkSkyApiSecret, mockHttp.Object);
 		}
 
 		[Test]
 		public void TestGetDailyForecast()
 		{
-		
-			var forecast = _weatherProvider.GetForecast(DateTime.Now);
-			Console.WriteLine(forecast);
+			var forecast = _weatherProvider.GetForecast(_testLocation, DateTime.Now);
 			Assert.IsNotNull(forecast);
 		}
-
-		[TestCase("2017/06/01")]
-		[TestCase("2017/06/05")]
-		[TestCase("2017/06/10")]
-		public void TestSummary(string dateStr)
+		
+		[Test]
+		public void TestSummary()
 		{
-			var forecast = _weatherProvider.GetForecastRaw(DateTime.Parse(dateStr));
-			Console.WriteLine(forecast.Daily.Data.FirstOrDefault()?.Summary);
-			Assert.IsNotEmpty(forecast.Daily.Data.FirstOrDefault()?.Summary);
+			var forecast = _weatherProvider.GetForecast(_testLocation, DateTime.Now);
+			Assert.IsTrue(forecast == "Partly cloudy starting in the evening.");
 		}
+
+		// SHORTCUT: Skip testing for time based weather requests, we'd need to mock out
+		// the requests which doesn't really help testing the temporal component of the weather
+		// requests as those are really mainly handled by DarkSky
 	}
 }

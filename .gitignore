@@ -32,3 +32,6 @@ _ReSharper*/
 #Nuget packages folder
 packages/
 
+
+*.config
+SlackBotPrototype/SlackBotPrototype/App.config

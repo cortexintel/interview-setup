@@ -2,11 +2,17 @@
 
 ## Overview 
 
-Slack weather bot that uses DarkSky API to get forecasts. If bot is running, it'll notify every morning of the current weather if the today's forecast is different from yesterday's. The bot is currently intended to run a console executable but can be modified to run as a windows service.
+Slack weather bot that uses DarkSky API to get forecasts. The bot supports location based weather requests ()
+To support location based weather requests, we need to persist user locations. 
+
+It currently only supports small set of locations from demonstration purposes, 1000 cities in the United States only. Data source for cities from this Gist: https://gist.github.com/Miserlou/c5cd8364bf9b2420bb29
 
 ## Features
 
 * Responds to `weather now`, `weather tomorrow`, and `what should I wear?`
+* Responds to `weather now <location>`, `weather tomorrow <location>`
+  * <location> needs to be a city state pair, where state is a two letter abbreviation e.g. New York, NY
+* User can set location with `set me to <location>`
 
 ## Development Setup
 
@@ -17,18 +23,40 @@ Slack weather bot that uses DarkSky API to get forecasts. If bot is running, it'
 
 * DarkSky API -- provides the weather info
 * Slack API -- uses RTM inferface 
-* Stanford NLP library -- used for tokenization and labeling of messages
-  * Download model data package from http://nlp.stanford.edu/software/stanford-postagger-full-2016-10-31.zip
+* SQLite database
 
 ## Setup Instructions
 
-* Download Stanford NLP model data from http://nlp.stanford.edu/software/stanford-postagger-full-2016-10-31.zip
-* Extract package contents
-* Set environment variable for Stanford NLP model folder `STANFORD_NLP_FOLDER` to the location of the extracted package
-* Set environment variable for DarkSky API `DARK_SKY_TOKEN` to DarkSky secret
-* Set environment variable for Slack API bot user `SLACK_API_TOKEN` to Slack bot user secret
-* Run executable via commandline `./SlackBotPrototype.exe`
+1. Create app.config file in deploy folder
+```
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <startup>
+      <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5.2" />
+  </startup>
+  <appSettings>
+      <add key="SLACK_API_TOKEN" value="TOKEN" />
+      <add key="DARK_SKY_TOKEN" value="TOKEN" />      
+  </appSettings>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-10.0.0.0" newVersion="10.0.0.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+</configuration>
+```
+1. Set token for DarkSky API `DARK_SKY_TOKEN` to DarkSky secret in App.config
+1. Set token for Slack API bot user `SLACK_API_TOKEN` to Slack bot user secret in App.config
+1. Run executable `./DBPreparer.exe`, this creates a `SlackBotDb.db` file that is required for persistence.
+1. Copy DB file to deploy folder.
+1. Run executable via commandline `./SlackBotPrototype.exe`
 
+## Troubleshooting
+
+* `SQLite.dll` is not found -- quirk with library means that sometimes a full `rebuid solution` is required
 
 
 
