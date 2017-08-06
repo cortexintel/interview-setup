@@ -21,7 +21,7 @@ namespace SlackBotPrototype
 			
 			if (string.IsNullOrWhiteSpace(slackToken))
 			{
-				// normally would use logging library instead
+				// SHORTCUT: Normally would use logging library instead so that we can have a robust, and standardized logs
 				Console.WriteLine("Slack token not found in environment var name = `{SLACK_API_TOKEN}`");
 				return;
 			}
@@ -32,6 +32,8 @@ namespace SlackBotPrototype
 				return;
 			}
 
+			// SHORTCUT: We'd normally wrap the slack client library so that we can
+			// switch implementations or libraries with less fuss
 			_client = new SlackSocketClient(slackToken);
 			_weatherProvider = new DarkSkyWeatherProvider(darkSkyToken, new RestClientHttpProvider(ConfigConstants.DarkSkyBaseUrl));
 			_messageToCommandConverter = new MessageToCommandConverter(_weatherProvider, new SqLitePersistence());
