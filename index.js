@@ -1,3 +1,7 @@
+const {RtmClient, CLIENT_EVENTS, RTM_EVENTS} = require('@slack/client');
+const axios = require('axios');
+const {checkWeatherDifference, checkHourlyPrecipitation} = require('./utils')
+
 /**
   Setup variables
 **/
@@ -19,9 +23,14 @@ const channel = '';
 
 const rtm = new RtmClient(bot_token);
 
+// Verify slackbot is connected and authenticated
 rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, rtmStartData => console.log('slackbot is running..'));
 
+/**
+  Slackbot should analyze each message to check if a response is expected
+**/
 rtm.on(RTM_EVENTS.MESSAGE, message => {
+  // Create a map of words in the message
   const wordMap = {};
   if (message.text) {
     const words = message.text.split(' ');
@@ -31,10 +40,12 @@ rtm.on(RTM_EVENTS.MESSAGE, message => {
     }
   }
 
-  if (wordMap['<@UDD5U0U04>'] && wordMap['Weather']) {    
+  // Check if slackbot was mentioned and word "weather" was included
+  if (wordMap['<@UDD5U0U04>'] && wordMap['Weather'] || wordMap['eather']) {    
     axios
       .get(darkSkyUrl)
       .then(response => {
+        // Construct message based on response from DarkSky
         let reply;
         if (wordMap['now']) {
           reply = response && response.data && response.data.currently && response.data.currently.summary;
@@ -51,6 +62,7 @@ rtm.on(RTM_EVENTS.MESSAGE, message => {
         } else {
           reply = 'Weather now or Weather tomorrow?'
         }
+        // If reply was not set, something has gone wrong
         reply = reply ? reply : 'Error retrieving data'
 
         rtm.sendMessage(reply, message.channel);
@@ -60,6 +72,35 @@ rtm.on(RTM_EVENTS.MESSAGE, message => {
         console.log(error)
       })
   }
+});
+
+/**
+  Slackbot should give a morning update at 6 AM if the weather has changed.
+  It should also check every hour if precipitation is starting or stopping. 
+**/
+rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, () => {
+  setInterval(() => { 
+    var hour = new Date().getHours();
+    if (hour === 6) {
+      checkWeatherDifference().then(response => {
+        if (response) {
+          rtm.sendMessage(response, channel);
+        }
+      }).catch(error => {
+        console.log('Error accessing darksky ❌')
+        console.log(error)
+      })
+    }
+
+    checkHourlyPrecipitation().then(response => {
+      if (response) {
+        rtm.sendMessage(response, channel);
+      }
+    }).catch(error => {
+      console.log('Error accessing darksky ❌')
+      console.log(error)
+    })
+  } , 1000 * 60 * 60);
 });
 
 rtm.start();
