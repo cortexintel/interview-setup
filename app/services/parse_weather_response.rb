@@ -15,7 +15,7 @@ class ParseWeatherResponse
     when 'tomorrow'
       TomorrowsWeatherParser.new(response_body)
     else
-      WeatherParser.new(response_body)
+      DailyWeatherParser.new(response_body)
     end
   end
 

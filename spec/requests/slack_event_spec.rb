@@ -82,7 +82,7 @@ RSpec.describe 'Slack Event', type: :request do
 
   it 'posts a message to slack with weather for tomorrow', vcr: { record: :once } do
     expect(PostSlackMessage).to receive(:call).with(
-      "Weather for Saturday, Nov 17: Mostly cloudy until afternoon.\nTemperature: ˚F\nHumidity: 0.69%\nPrecipitation: 0%\n",
+      "Weather for Saturday, Nov 17: Mostly cloudy until afternoon.\nTemperature High: 21.7˚F\nTemperature Low: 5.3˚F\nHumidity: 0.69%\nPrecipitation: 0%\n",
       "cool channel"
     )
 

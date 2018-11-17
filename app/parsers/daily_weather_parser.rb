@@ -1,4 +1,4 @@
-class WeatherParser
+class DailyWeatherParser
   def initialize(body)
     @body = JSON.parse(body)
   end
@@ -11,8 +11,12 @@ class WeatherParser
     weather['summary']
   end
 
-  def temperature
-    weather['temperature']
+  def temperature_high
+    weather['temperatureHigh']
+  end
+
+  def temperature_low
+    weather['temperatureLow']
   end
 
   def humidity
