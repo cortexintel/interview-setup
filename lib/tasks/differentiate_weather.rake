@@ -1,5 +1,5 @@
 desc "Differentiates weather of today from yesterday and posts results to Slack"
-task differentiates_weather: :environment  do
+task differentiate_weather: :environment  do
   weather_differences = DifferentiateWeather.call
   if weather_differences.significant?
     message = WeatherDifferencePresenter.new(weather_difference).call

@@ -7,7 +7,8 @@ class WeatherDifferencePresenter
     <<~MESSAGE
     ALERT: Significant Change In Weather From Yesterday
 
-    Change in temperature: #{weather_difference.temperature}˚F
+    Change in temperature high: #{weather_difference.temperature_high}˚F
+    Change in temperature low: #{weather_difference.temperature_low}˚F
     Change in humidity: #{weather_difference.humidity}%
     Change in precipitation: #{weather_difference.precip_probability}%
     MESSAGE

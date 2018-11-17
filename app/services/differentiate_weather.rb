@@ -9,9 +9,10 @@ class DifferentiateWeather
 
   private
 
-  WeatherDifferences = Struct.new(:temperature, :humidity, :precip_probability) do
+  WeatherDifferences = Struct.new(:temperature_high, :temperature_low :humidity, :precip_probability) do
     def significant?
-      temperature.abs > 10          ||
+      temperature_high.abs > 10     ||
+      temperature_low.abs > 10      ||
       humidity.abs    > 0.25        ||
       precip_probability.abs > 0.25
     end
@@ -19,7 +20,8 @@ class DifferentiateWeather
 
   def differences
     WeatherDifferences.new(
-      weather_today.temperature - weather_yesterday.temperature,
+      weather_today.temperature_high - weather_yesterday.temperature_high,
+      weather_today.temperature_low - weather_yesterday.temperature_low,
       weather_today.humidity - weather_yesterday.humidity,
       weather_today.precip_probability - weather_yesterday.precip_probability
     )
