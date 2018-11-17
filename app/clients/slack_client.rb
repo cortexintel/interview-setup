@@ -6,7 +6,7 @@ class SlackClient
     new.post_chat_message(*args)
   end
 
-  def initialize(token)
+  def initialize(token = nil)
     @token = token || ENV['SLACK_BOT_TOKEN']
   end
 
