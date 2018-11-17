@@ -4,28 +4,32 @@ class CurrentWeatherParser
   end
 
   def time
-    current_weather['time']
+    weather['time']
   end
 
   def summary
-    current_weather['summary']
+    weather['summary']
   end
 
   def temperature
-    current_weather['temperature']
+    weather['temperature']
   end
 
   def humidity
-    current_weather['humidity']
+    weather['humidity']
   end
 
   def precip_probability
-    current_weather['precipProbability']
+    weather['precipProbability']
   end
 
   private
 
   attr_reader :body
+
+  def weather
+    current_weather
+  end
 
   def current_weather
     body['currently']

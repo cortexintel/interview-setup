@@ -1,24 +1,25 @@
 class ParseWeatherResponse
-
   def self.call(*args)
     new(*args).call
   end
 
-  def initialize(weather_response, type)
-    @weather_response = weather_response
+  def initialize(response_body, type = nil)
+    @response_body = response_body
     @type = type.downcase
   end
 
   def call
     case type
     when 'now'
-      CurrentWeatherParser.new(weather_response)
+      CurrentWeatherParser.new(response_body)
     when 'tomorrow'
-      TomorrowsWeatherParser.new(weather_response)
+      TomorrowsWeatherParser.new(response_body)
+    else
+      WeatherParser.new(response_body)
     end
   end
 
   private
 
-  attr_reader :weather_response, :type
+  attr_reader :response_body, :type
 end

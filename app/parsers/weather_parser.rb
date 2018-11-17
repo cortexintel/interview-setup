@@ -1,4 +1,4 @@
-class TomorrowsWeatherParser
+class WeatherParser
   def initialize(body)
     @body = JSON.parse(body)
   end
@@ -23,19 +23,11 @@ class TomorrowsWeatherParser
     weather['precipProbability']
   end
 
-  def weather
-    body['daily']['data'][0]
-  end
-
   private
 
   attr_reader :body
 
   def weather
-    tomorrows_weather
-  end
-
-  def tomorrows_weather
-    body['daily']['data'][1]
+    body['daily']['data'][0]
   end
 end

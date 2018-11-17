@@ -1,20 +1,19 @@
 class PostSlackMessage
-
   def self.call(*args)
     new(*args).call
   end
 
-  def initialize(message, channel, http_client = nil)
+  def initialize(message, channel, client = nil)
     @message = message
     @channel = channel
-    @http_client = http_client || SlackClient
+    @client = client || SlackClient
   end
 
   def call
-    http_client.post_chat_message(message, channel)
+    client.post_chat_message(message, channel)
   end
 
   private
 
-  attr_reader :message, :channel, :http_client
+  attr_reader :message, :channel, :client
 end

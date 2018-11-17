@@ -3,15 +3,18 @@ class FetchWeather
     new(*args).call
   end
 
-  def initialize(darksky_client = nil)
-    @darksky_client = darksky_client || DarkskyClient
+  def initialize(args = {}, client = nil)
+    @type = args.fetch(:type, nil)
+    @time = args.fetch(:time, nil)
+    @client = client || DarkskyClient
   end
 
   def call
-    darksky_client.forecast
+    response = client.forecast(time)
+    ParseWeatherResponse.call(response.body, type)
   end
 
   private
 
-  attr_reader :darksky_client
+  attr_reader :client, :time, :type
 end
