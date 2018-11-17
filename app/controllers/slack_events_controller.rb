@@ -1,7 +1,7 @@
 class SlackEventsController < ApplicationController
-  before_action :handle_url_verification
-  before_action :check_event_type
-  before_action :check_text
+  before_action :handle_url_verification, only: :handle
+  before_action :check_event_type, only: :handle
+  before_action :check_text, only: :handle
 
   def index
     head :ok
