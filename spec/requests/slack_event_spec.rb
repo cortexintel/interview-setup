@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe 'Slack Event', type: :request do
+  let(:headers) do
+    { "Content-Type" => "application/json" }
+  end
 
   context 'Request url verification' do
     let(:params) do
@@ -8,23 +11,23 @@ RSpec.describe 'Slack Event', type: :request do
         token: '12345',
         challenge: '555',
         type: 'url_verification'
-      }
+      }.to_json
     end
 
     it 'returns 200' do
-      post '/api', params: params
+      post '/api', params: params, headers: headers
 
       expect(response).to have_http_status('200')
     end
 
     it 'returns the challenge token' do
-      post '/api', params: params
+      post '/api', params: params, headers: headers
 
       expect(response.body).to eq('555')
     end
 
     it 'is a plain text response' do
-      post '/api', params: params
+      post '/api', params: params, headers: headers
 
       expect(response.content_type).to eq('text/plain')
     end
@@ -39,7 +42,8 @@ RSpec.describe 'Slack Event', type: :request do
             text: 'Weather now',
             channel: 'cool channel'
           }
-        }
+        }.to_json,
+        headers: headers
 
       expect(response).to have_http_status('406')
     end
@@ -52,7 +56,8 @@ RSpec.describe 'Slack Event', type: :request do
             text: 'Weather next friday',
             channel: 'cool channel'
           }
-        }
+        }.to_json,
+        headers: headers
 
       expect(response).to have_http_status('406')
     end
@@ -71,7 +76,8 @@ RSpec.describe 'Slack Event', type: :request do
           text: 'Weather now',
           channel: 'cool channel'
         }
-      }
+      }.to_json,
+      headers: headers
   end
 
   it 'posts a message to slack with weather for tomorrow', vcr: { record: :once } do
@@ -87,6 +93,7 @@ RSpec.describe 'Slack Event', type: :request do
           text: 'Weather tomorrow',
           channel: 'cool channel'
         }
-      }
+      }.to_json,
+      headers: headers
   end
 end

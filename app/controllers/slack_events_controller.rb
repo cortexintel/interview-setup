@@ -3,6 +3,10 @@ class SlackEventsController < ApplicationController
   before_action :check_event_type
   before_action :check_text
 
+  def index
+    head :ok
+  end
+
   def handle
     weather = FetchWeather.call(type: @match[1])
     message = WeatherPresenter.new(weather).call
