@@ -2,6 +2,34 @@ require 'rails_helper'
 
 RSpec.describe 'Slack Event', type: :request do
 
+  context 'Request url verification' do
+    let(:params) do
+      {
+        token: '12345',
+        challenge: '555',
+        type: 'url_verification'
+      }
+    end
+
+    it 'returns 200' do
+      post '/api', params: params
+
+      expect(response).to have_http_status('200')
+    end
+
+    it 'returns the challenge token' do
+      post '/api', params: params
+
+      expect(response.body).to eq('555')
+    end
+
+    it 'is a plain text response' do
+      post '/api', params: params
+
+      expect(response.content_type).to eq('text/plain')
+    end
+  end
+
   context 'Invalid request' do
     it 'returns 406 if event type is unacceptable' do
       post '/api', params: {

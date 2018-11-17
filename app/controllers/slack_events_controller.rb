@@ -1,4 +1,5 @@
 class SlackEventsController < ApplicationController
+  before_action :handle_url_verification
   before_action :check_event_type
   before_action :check_text
 
@@ -11,6 +12,12 @@ class SlackEventsController < ApplicationController
   end
 
   private
+
+  def handle_url_verification
+    if params[:type] == 'url_verification'
+      render plain: params[:challenge], status: :ok
+    end
+  end
 
   def event_params
     params.require(:event).permit(:type, :text, :channel)
