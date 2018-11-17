@@ -3,7 +3,7 @@ class SlackClient
   base_uri "https://slack.com/api/chat.postMessage"
 
   def self.post_chat_message(*args)
-    new.post_chat_message((*args)
+    new.post_chat_message(*args)
   end
 
   def initialize(token)
