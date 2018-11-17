@@ -3,9 +3,8 @@ class SlackEventsController < ApplicationController
   before_action :check_text
 
   def handle
-    response = FetchCurrentWeather.call
-    weather = CurrentWeatherParser.new(response.body)   if @match[1] == 'now'
-    weather = TomorrowsWeatherParser.new(response.body) if @match[1] == 'tomorrow'
+    response = FetchWeather.call
+    weather  = ParseWeatherResponse.call(response.body, @match[1])
     message  = WeatherPresenter.new(weather).call
     PostSlackMessage.call(message, event_params[:channel])
 

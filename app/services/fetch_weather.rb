@@ -1,7 +1,6 @@
-class FetchCurrentWeather
-
-  def self.call(darksky_client = nil)
-    new(darksky_client).call
+class FetchWeather
+  def self.call(*args)
+    new(*args).call
   end
 
   def initialize(darksky_client = nil)

@@ -1,7 +1,7 @@
 class PostSlackMessage
 
   def self.call(*args)
-    new.call(*args)
+    new(*args).call
   end
 
   def initialize(message, channel, http_client = nil)
