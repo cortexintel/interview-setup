@@ -13,7 +13,7 @@ class SlackClient
   def post_chat_message(message, channel)
     body = { text: message, channel: channel }
 
-    self.class.post('/', body: body.to_json, headers: headers)
+    self.class.post('', headers: headers, body: body.to_json)
   end
 
   private
