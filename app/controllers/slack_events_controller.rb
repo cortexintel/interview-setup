@@ -1,19 +1,30 @@
 class SlackEventsController < ApplicationController
+  before_action :check_event_type
+  before_action :check_text
 
   def handle
-    if event_params[:type] == 'app_mention' && event_params[:text] == 'Weather now'
-      response = FetchCurrentWeather.call
-      weather  = CurrentWeatherParser.new(response.body)
-      message  = WeatherPresenter.new(weather).call
-      PostSlackMessage.call(message, event_params[:channel])
+    response = FetchCurrentWeather.call
+    weather = CurrentWeatherParser.new(response.body)   if @match[1] == 'now'
+    weather = TomorrowsWeatherParser.new(response.body) if @match[1] == 'tomorrow'
+    message  = WeatherPresenter.new(weather).call
+    PostSlackMessage.call(message, event_params[:channel])
 
-      head :ok
-    else
-      head :not_acceptable
-    end
+    head :ok
   end
+
+  private
 
   def event_params
     params.require(:event).permit(:type, :text, :channel)
+  end
+
+  def check_event_type
+    head :not_acceptable unless event_params[:type] == 'app_mention'
+  end
+
+  def check_text
+    @match = /\A.*weather\s(now|tomorrow).*\z/i.match(event_params[:text])
+
+    head :not_acceptable unless @match
   end
 end

@@ -5,13 +5,18 @@ class WeatherPresenter
 
   def call
     <<~MESSAGE
-    Current Weather: #{weather.summary}
+    Weather for #{date}: #{weather.summary}
     Temperature: #{weather.temperature}˚F
     Humidity: #{weather.humidity}%
+    Precipitation: #{weather.precip_probability}%
     MESSAGE
   end
 
   private
+
+  def date
+    Time.at(weather.time).strftime('%A, %b %d')
+  end
 
   attr_reader :weather
 end

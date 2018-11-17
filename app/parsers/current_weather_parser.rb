@@ -19,12 +19,8 @@ class CurrentWeatherParser
     current_weather['humidity']
   end
 
-  def wind_speed
-    current_weather['windSpeed']
-  end
-
-  def cloud_cover
-    current_weather['cloudCover']
+  def precip_probability
+    current_weather['precipProbability']
   end
 
   private
