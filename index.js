@@ -1,10 +1,8 @@
-var RtmClient = require('@slack/client').RtmClient;
-var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
-var http = require('http');
-var axios = require('axios');
+const { RTMClient } = require('@slack/rtm-api');
+const axios = require('axios');
 
-var bot_token = process.env.SLACK_BOT_TOKEN;
-var darksky_token = process.env.DARKSKY_TOKEN;
+const bot_token = process.env.SLACK_BOT_TOKEN;
+const darksky_token = process.env.DARKSKY_TOKEN;
 
 if (!bot_token) {
   console.log("Missing SLACK_BOT_TOKEN environement variable ❌")
@@ -16,9 +14,9 @@ if (!darksky_token) {
   process.exit(1)
 }
 
-var rtm = new RtmClient(bot_token);
+const rtm = new RTMClient(bot_token);
 
-rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
+rtm.on('ready', async() => {
   console.log("Slack Successfully Authenticated ✅");
   
   axios
